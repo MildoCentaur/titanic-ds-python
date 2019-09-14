@@ -57,3 +57,7 @@ df.applymap(lambda x: x**2)
 df["AgeRange2"]= df["Age"].map(lambda x : ceil(x/5) -1)
 
 import math
+
+from sklearn.model_selection import GridSearchCV
+
+GridSearchCV.cv_results_
