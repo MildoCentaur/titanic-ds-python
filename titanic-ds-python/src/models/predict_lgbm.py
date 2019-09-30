@@ -134,13 +134,13 @@ def predictions():
     file_operations.write_logs(FILENAME,'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
     file_operations.write_logs(FILENAME,"Metrics base_model: ")
-    file_operations.write_logs(FILENAME,base_model['metrics'])
+    file_operations.write_logs(FILENAME, str(base_model['metrics']))
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
     file_operations.write_logs(FILENAME,'Creating lgbm  model')
     lgbm_model = create_lgbm_optimized_model(X_train, y_train, X_test, y_test)
     file_operations.write_logs(FILENAME,"Metrics lgbm_model: ")
-    file_operations.write_logs(FILENAME,lgbm_model['metrics'])
+    file_operations.write_logs(FILENAME, str(lgbm_model['metrics']))
     file_operations.get_submission_file(lgbm_model['model'], '04_lgbm_model_optimized.csv', competition_df)
 
     # Feature standarization
@@ -151,8 +151,8 @@ def predictions():
     file_operations.write_logs(FILENAME,'Creating lgbm  scaled model')
     lgbm_model_scaled = create_lgbm_optimized_model(X_train_scaled, y_train, X_test_scaled, y_test)
     file_operations.write_logs(FILENAME, "Metrics lgbm_model_scaled: ")
-    file_operations.write_logs(FILENAME, lgbm_model_scaled['metrics'])
-    file_operations.get_submission_file(lgbm_model_scaled['model'], '04_lgbm_model_optimized_scaled.csv',
+    file_operations.write_logs(FILENAME, str(lgbm_model_scaled['metrics']))
+    file_operations.get_submission_file(str(lgbm_model_scaled['model']), '04_lgbm_model_optimized_scaled.csv',
                                         competition_df)
 
 
