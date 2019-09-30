@@ -73,8 +73,6 @@ def do_generate_logistic_simple_model(X_train, y_train, parameters):
 
     file_operations.write_logs(FILENAME, "search grid")
     file_operations.write_logs(FILENAME, model_grid)
-
-
     return model_grid
 
 
@@ -176,7 +174,7 @@ def predictions():
     # Linear base dummy model
     file_operations.write_logs(FILENAME,'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
-    file_operations.write_logs(FILENAME,"Metrics base_model: " + base_model['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics base_model: " + base_model['metrics'])
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
     file_operations.get_submission_file('Creating rf  model')

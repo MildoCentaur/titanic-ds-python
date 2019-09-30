@@ -21,15 +21,16 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-from lightgbm import LGBMClassifier
-from sklearn.svm import SVC, LinearSVC
+# from sklearn.ensemble import RandomForestClassifier
+# from lightgbm import LGBMClassifier
+# from sklearn.svm import SVC, LinearSVC
 
 # Accuracy = (True Positives + True Negatives) / ( TN + FN + FP + TP)
 # Presicion = True Positive / (TP+FP)
 # Recall = True Positive/(TP+FP)
 from sklearn.utils.testing import ignore_warnings
 
+FILENAME='Prediction_outcome.txt'
 
 def calculate_metrics(model, X_test, y_test):
     score = model.score(X_test, y_test)
@@ -68,19 +69,19 @@ def do_generate_logistic_simple_model(X_train, y_train, parameters):
     model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
-    print(model_grid)
+    file_operations.write_logs(FILENAME, "Calculate logistic simple model" + model_grid)
 
     return model_grid
 
 
 def do_generate_metrics_logistic_simple_model(X_train, y_train, X_test, y_test, grid):
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
-    print(grid.best_params_)
+    file_operations.write_logs(FILENAME, "Calculate logistic simple model best params" + grid.best_params_)
     model.set_params(**grid.best_params_)
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
-    print(model.get_params(), " ", model.score)
-    print(grid.best_params_, " ", grid.best_score_)
+    file_operations.write_logs(FILENAME, "model params" + model.get_params() + " scores:" + model.score)
+    file_operations.write_logs(FILENAME, "Grid params" + grid.best_params_ + " scores:" + grid.best_score_)
 
     return model, metrics
 
@@ -216,27 +217,27 @@ def predictions():
     y = train_df['Survived'].ravel()
     shape = X.shape
     if shape[0] == 891 & shape[1] > 36:
-        print("Dataset has ", shape[1], " and right amount amount of rows")
+        file_operations.write_logs(FILENAME, "Dataset has " + shape[1] + " and right amount amount of rows")
 
-    print('Creating test and train dataset')
+    file_operations.write_logs(FILENAME, 'Creating test and train dataset')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=my_constants.TEST_SIZE,
                                                         random_state=my_constants.RANDOM_VALUE)
     # Linear base dummy model
-    print('Creating linear model')
+    file_operations.write_logs(FILENAME, 'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
-    print( "Metrics BaseModel: ",base_model['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics BaseModel: " + base_model['metrics'])
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
     # Logistic regression model
-    print('Creating logistic simple model')
+    file_operations.write_logs(FILENAME,'Creating logistic simple model')
     lg_simple_model = create_logistic_simple_model(X_train, y_train, X_test, y_test)
-    print("Metrics lg_simple_model: ", lg_simple_model['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics lg_simple_model: " + lg_simple_model['metrics'])
     file_operations.get_submission_file(lg_simple_model['model'], '02_lg_model.csv', competition_df)
 
     # Logistic regression model with hyp optimization
-    print('Creating logistic optimazed model')
+    file_operations.write_logs(FILENAME,'Creating logistic optimazed model')
     lg_optimazed_model = create_logistic_optimazed_model(X_train, y_train, X_test, y_test)
-    print("Metrics lg_optimazed_model: ", lg_optimazed_model['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics lg_optimazed_model: " + lg_optimazed_model['metrics'])
     file_operations.get_submission_file(lg_optimazed_model['model'], '03_lg_model_optimized.csv', competition_df)
 
     # print('Creating rf  model')
@@ -259,16 +260,16 @@ def predictions():
     X_test_scaled = scaler.transform(X_test)
 
     # linear base dummy model
-    print('Creating dummy scaled model')
+    file_operations.write_logs(FILENAME,'Creating dummy scaled model')
     base_model_scaled = create_base_model(X_train_scaled, y_train, X_test_scaled, y_test)
-    print("Metrics base_model_scaled: ", base_model_scaled['metrics'])
+    file_operations.write_logs(FILENAME,"Metrics base_model_scaled: " +  base_model_scaled['metrics'])
     file_operations.get_submission_file_with_standardization(base_model_scaled['model'], '01_base_model_scaled.csv', scaler,
                                                              competition_df)
 
     # Logistic regression model
-    print('Creating logitic optimazed scaled model')
+    file_operations.write_logs(FILENAME,'Creating logitic optimazed scaled model')
     lg_simple_model_scaled = create_logistic_simple_model(X_train, y_train, X_test, y_test)
-    print("Metrics lg_simple_model_scaled: ", lg_simple_model_scaled['metrics'])
+    file_operations.write_logs(FILENAME,"Metrics lg_simple_model_scaled: " + lg_simple_model_scaled['metrics'])
     file_operations.get_submission_file_with_standardization(lg_simple_model_scaled['model'], '02_lg_model_scaled.csv', scaler,
                                                              competition_df)
 
