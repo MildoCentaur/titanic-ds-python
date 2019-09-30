@@ -34,7 +34,11 @@ def process_data(df):
          .assign(Deck = lambda x : x.Cabin.map(get_deck))
          # feature encoding 
          .assign(IsMale = lambda x : np.where(x.Sex == 'male', 1,0))
-         .pipe(pd.get_dummies, columns=['Deck', 'Pclass','Title', 'Fare_Bin', 'Embarked','AgeState'])
+         .assign(WCG = lambda x : np.where((df.Sex == 'female') | (df.Age < 18), 1, 0)) 
+         .assign(RichOldLady = lambda x : np.where( (df.Age > 60) & (df.Sex == 'female') & ((df.Pclass==1) | (df.Pclass==2)), 1,0))
+         .assign(PoorOldMan = lambda x : np.where( (df.Age > 60) & (df.Sex == 'male') &  ( df.Pclass==3) , 1,0))
+         .assign(DeckSurvived = lambda x : x.Cabin.map(get_deck_survival))
+         .pipe(pd.get_dummies, columns=['Deck', 'Pclass','Title', 'Fare_Bin', 'Embarked','AgeState','DeckSurvived'])
          # add code to drop unnecessary columns
          .drop(['Cabin','Name','Ticket','Parch','SibSp','Sex'], axis=1)
          # reorder columns
@@ -69,6 +73,9 @@ def get_title(name):
 def get_deck(cabin):
     return np.where(pd.notnull(cabin),str(cabin)[0].upper(),'Z')
 
+def get_deck_survival(cabin):
+    return np.where( get_deck(cabin) in ['B','C','D','E','F'], 'BCDEF' ,'AGZ')
+    
 def fill_missing_values(df):
     # embarked
     df.Embarked.fillna('C', inplace=True)

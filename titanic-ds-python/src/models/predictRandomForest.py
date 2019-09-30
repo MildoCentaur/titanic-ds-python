@@ -24,6 +24,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from lightgbm import LGBMClassifier
 from sklearn.svm import SVC, LinearSVC
+FILENAME='RF_Prediction_outcome.txt'
 
 # Accuracy = (True Positives + True Negatives) / ( TN + FN + FP + TP)
 # Presicion = True Positive / (TP+FP)
@@ -64,70 +65,58 @@ def create_logistic_simple_model(X_train, y_train, X_test, y_test):
 
 
 def do_generate_logistic_simple_model(X_train, y_train, parameters):
+    file_operations.write_logs(FILENAME, "Calculate logistic simple model")
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
     model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
-    print(model_grid)
+
+    file_operations.write_logs(FILENAME, "search grid")
+    file_operations.write_logs(FILENAME, model_grid)
+
 
     return model_grid
 
 
 def do_generate_metrics_logistic_simple_model(X_train, y_train, X_test, y_test, grid):
+    file_operations.write_logs(FILENAME, "do_generate_metrics_logistic_simple_model")
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
-    print(grid.best_params_)
+    file_operations.write_logs(FILENAME, "grid Best params")
+    file_operations.write_logs(FILENAME, grid.best_params_)
+
     model.set_params(**grid.best_params_)
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
-    print(model.get_params(), " ", model.score)
-    print(grid.best_params_, " ", grid.best_score_)
+    file_operations.write_logs(FILENAME, 'model params:' + model.get_params() + " model score:" + model.score)
+    file_operations.write_logs(FILENAME, 'model grid.best_params_:' + model.get_params() + " grid.best_score_:" + grid.best_score_)
 
     return model, metrics
 
 
 def do_generate_rf_optimazed_model(X_train, y_train, parameters):
-    print('Starting RF Grid Search with parameters:', parameters)
+    file_operations.write_logs(FILENAME,'Starting RF Grid Search with parameters:' + parameters)
     model = RandomForestClassifier(random_state=my_constants.RANDOM_VALUE, oob_score=True)
     model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
 
-    print('RF Grid search completed\n')
+    file_operations.write_logs(FILENAME,'RF Grid search completed')
 
     return model_grid
 
 
 def do_generate_metrics_rf_optimazed_model(X_train, y_train, X_test, y_test, grid):
-    print('Starting metrics calculation\n')
+    file_operations.write_logs(FILENAME,'Starting metrics calculation')
     model = RandomForestClassifier(random_state=my_constants.RANDOM_VALUE, oob_score=True)
     model.set_params(**grid.best_params_)
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
-    print("Generated model params and results\n params:", model.get_params(), "\nscore ", model.score(X_test, y_test))
-    print("Search grid best params and results\n params:", grid.best_params_, "\nscore ", grid.best_score_)
+    file_operations.write_logs(FILENAME, "Generated model params and results\n params:" + model.get_params()
+                               + "\nscore " + model.score(X_test, y_test))
+    file_operations.write_logs(FILENAME, "Search grid best params and results\n params:" + grid.best_params_
+                               + "\nscore " + grid.best_score_)
 
     return model, metrics
-
-
-def do_generate_metrics_lgbm_optimazed_model(X_train, y_train, X_test, y_test, grid):
-    print("LGBM metrics calculation\n")
-    model = LGBMClassifier(random_state=0)
-    model.set_params(**grid.best_params_)
-    model.fit(X_train, y_train)
-    metrics = calculate_metrics(model, X_test, y_test)
-    print("Generated model params and results\n params:", model.get_params(), "\nscore ", model.score(X_test, y_test))
-    print("Search grid best params and results\n params:", grid.best_params_, "\nscore ", grid.best_score_)
-
-    return model, metrics
-
-
-def do_generate_lgbm_optimazed_model(X_train, y_train, parameters):
-    print('Starting LGBM Grid Search with parameters:', parameters)
-    model = LGBMClassifier(random_state=0)
-    model = GridSearchCV(model, param_grid=parameters, cv=3)
-    model.fit(X_train, y_train)
-    print("LGBM grid search completed")
-    return model
 
 
 def create_logistic_optimazed_model(X_train, y_train, X_test, y_test):
@@ -171,50 +160,6 @@ def create_rf_optimized_model(X_train, y_train, X_test, y_test):
     }
 
 
-def create_lgbm_optimized_model(X_train, y_train, X_test, y_test):
-    parameters = {
-        'learning_rate': [0.2, 0.3, 0.4, 0.5, 0.6],
-        'n_estimators': [5, 10, 20, 50, 70, 100, 150, 200],
-        'num_leaves': [10, 15, 20, 25, 30, 40, 50, 60],
-        'subsample_for_bin': [10, 50, 100, 200],
-        'reg_alpha': [0.1, 0.2, 0.5, 0.7,0.8],
-        'reg_lambda': [0.1, 0.2, 0.5, 0.7, 0.8]
-    }
-
-    grid = do_generate_lgbm_optimazed_model(X_train, y_train, parameters)
-    model, metrics = do_generate_metrics_lgbm_optimazed_model(X_train, y_train, X_test, y_test, grid)
-    return {
-        'metrics': metrics,
-        'model': model
-    }
-
-
-def do_generate_svc_optimazed_model(X_train, y_train, parameters):
-    estimador = SVC(random_state=my_constants.RANDOM_VALUE)
-    print(estimador.get_params().keys())
-    model = GridSearchCV(estimator=estimador, param_grid=parameters, cv=3, iid=False)
-    model.fit(X_train, y_train)
-    return model
-
-
-def do_generate_metrics_svc_optimazed_model(X_train, y_train, X_test, y_test, grid):
-    pass
-
-
-def create_svc_optimized_model(X_train, y_train, X_test, y_test):
-    parameters = {'kernel': ['rbf'],
-                  'C': [7, 8, 9, 10, 20, 25, 30, 70, 100],
-                  'gamma': [0.0001, 0.001, 0.008, 0.009, 0.01, 0.011],
-                  'probability': [True]
-                  }
-    grid = do_generate_svc_optimazed_model(X_train, y_train, X_test, y_test, parameters)
-    model, metrics = do_generate_metrics_svc_optimazed_model(X_train, y_train, X_test, y_test, grid)
-    return {
-        'metrics': metrics,
-        'model': model
-    }
-
-
 def predictions():
     train_df = file_operations.read_data('processed', 'train.csv', 'PassengerId')
     competition_df = file_operations.read_data('processed', 'test.csv', 'PassengerId')
@@ -223,20 +168,20 @@ def predictions():
     y = train_df['Survived'].ravel()
     shape = X.shape
     if shape[0] == 891 & shape[1] > 36:
-        print("Dataset has ", shape[1], " and right amount amount of rows")
+        file_operations.write_logs(FILENAME, "Dataset has " + shape[1] + " and right amount amount of rows")
 
-    print('Creating test and train dataset')
+    file_operations.write_logs(FILENAME, 'Creating test and train dataset')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=my_constants.TEST_SIZE,
                                                         random_state=my_constants.RANDOM_VALUE)
     # Linear base dummy model
-    print('Creating linear model')
+    file_operations.write_logs(FILENAME,'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
-    print("Metrics base_model: ", base_model['metrics'])
+    file_operations.write_logs(FILENAME,"Metrics base_model: " + base_model['metrics'])
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
-    print('Creating rf  model')
+    file_operations.get_submission_file('Creating rf  model')
     rf_model_scaled = create_rf_optimized_model(X_train, y_train, X_test, y_test)
-    print("Metrics rf_model_scaled: ", rf_model_scaled['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics rf_model_scaled: " + rf_model_scaled['metrics'])
     file_operations.get_submission_file(rf_model_scaled['model'], '04_rf_model_optimized.csv', competition_df)
 
     # print('Creating lgbm  model')
@@ -253,9 +198,9 @@ def predictions():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    print('Creating rf scaled model')
+    file_operations.write_logs(FILENAME, 'Creating rf scaled model')
     rf_model_scaled = create_rf_optimized_model(X_train_scaled, y_train, X_test_scaled, y_test)
-    print("Metrics rf_model_scaled: ", rf_model_scaled['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics rf_model_scaled: ", rf_model_scaled['metrics'])
     file_operations.get_submission_file_with_standardization(rf_model_scaled['model'],
                                                              '04_rf_model_optimized_scaled.csv',
                                                              scaler, competition_df)

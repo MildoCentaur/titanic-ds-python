@@ -25,11 +25,12 @@ from sklearn.ensemble import RandomForestClassifier
 from lightgbm import LGBMClassifier
 from sklearn.svm import SVC, LinearSVC
 
+
 # Accuracy = (True Positives + True Negatives) / ( TN + FN + FP + TP)
 # Presicion = True Positive / (TP+FP)
 # Recall = True Positive/(TP+FP)
 from sklearn.utils.testing import ignore_warnings
-
+FILENAME='LGBM_Prediction_outcome.txt'
 
 def calculate_metrics(model, X_test, y_test):
     score = model.score(X_test, y_test)
@@ -54,23 +55,24 @@ def create_base_model(X_train, y_train, X_test, y_test):
 
 
 def do_generate_metrics_lgbm_optimazed_model(X_train, y_train, X_test, y_test, grid):
-    print("LGBM metrics calculation\n")
+    file_operations.write_logs(FILENAME,"LGBM metrics calculation\n")
     model = LGBMClassifier(random_state=0)
     model.set_params(**grid.best_params_)
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
-    print("Generated model params and results\n params:", model.get_params(), "\nscore ", model.score(X_test, y_test))
-    print("Search grid best params and results\n params:", grid.best_params_, "\nscore ", grid.best_score_)
+    file_operations.write_logs(FILENAME,"Generated model params and results\n params:" + model.get_params() + "\nscore "+ model.score(X_test, y_test))
+    file_operations.write_logs(FILENAME,"Search grid best params and results\n params:"+ grid.best_params_ + "\nscore "+ grid.best_score_)
 
     return model, metrics
 
 
 def do_generate_lgbm_optimazed_model(X_train, y_train, parameters):
-    print('Starting LGBM Grid Search with parameters:', parameters)
+    file_operations.write_logs(FILENAME,'Starting LGBM Grid Search with parameters:')
+    file_operations.write_logs(FILENAME,parameters)
     model = LGBMClassifier(random_state=0)
     model = GridSearchCV(model, param_grid=parameters, cv=3)
     model.fit(X_train, y_train)
-    print("LGBM grid search completed")
+    file_operations.write_logs(FILENAME,"LGBM grid search completed")
     return model
 
 
@@ -113,7 +115,7 @@ score  0.8469101123595506
 Metrics lgbm_model_scaled:  {'score': 0.8603351955307262, 'precision': 0.8666666666666667, 'cm': array([[102,   8],
        [ 17,  52]])}
 
-""""
+"""
 
 def predictions():
     train_df = file_operations.read_data('processed', 'train.csv', 'PassengerId')
@@ -123,20 +125,22 @@ def predictions():
     y = train_df['Survived'].ravel()
     shape = X.shape
     if shape[0] == 891 & shape[1] > 36:
-        print("Dataset has ", shape[1], " and right amount amount of rows")
+        file_operations.write_logs(FILENAME,"Dataset has ", shape[1], " and right amount amount of rows")
 
-    print('Creating test and train dataset')
+    file_operations.write_logs(FILENAME,'Creating test and train dataset')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=my_constants.TEST_SIZE,
                                                         random_state=my_constants.RANDOM_VALUE)
     # Linear base dummy model
-    print('Creating linear model')
+    file_operations.write_logs(FILENAME,'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
-    print("Metrics base_model: ", base_model['metrics'])
+    file_operations.write_logs(FILENAME,"Metrics base_model: ")
+    file_operations.write_logs(FILENAME,base_model['metrics'])
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
-    print('Creating lgbm  model')
+    file_operations.write_logs(FILENAME,'Creating lgbm  model')
     lgbm_model = create_lgbm_optimized_model(X_train, y_train, X_test, y_test)
-    print("Metrics lgbm_model: ", lgbm_model['metrics'])
+    file_operations.write_logs(FILENAME,"Metrics lgbm_model: ")
+    file_operations.write_logs(FILENAME,lgbm_model['metrics'])
     file_operations.get_submission_file(lgbm_model['model'], '04_lgbm_model_optimized.csv', competition_df)
 
     # Feature standarization
@@ -144,9 +148,10 @@ def predictions():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    print('Creating lgbm  scaled model')
+    file_operations.write_logs(FILENAME,'Creating lgbm  scaled model')
     lgbm_model_scaled = create_lgbm_optimized_model(X_train_scaled, y_train, X_test_scaled, y_test)
-    print("Metrics lgbm_model_scaled: ", lgbm_model_scaled['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics lgbm_model_scaled: ")
+    file_operations.write_logs(FILENAME, lgbm_model_scaled['metrics'])
     file_operations.get_submission_file(lgbm_model_scaled['model'], '04_lgbm_model_optimized_scaled.csv',
                                         competition_df)
 
