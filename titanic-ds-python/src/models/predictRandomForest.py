@@ -71,7 +71,7 @@ def do_generate_logistic_simple_model(X_train, y_train, parameters):
         model_grid.fit(X_train, y_train)
 
     file_operations.write_logs(FILENAME, "search grid")
-    file_operations.write_logs(FILENAME, model_grid)
+    file_operations.write_logs(FILENAME, str(model_grid))
     return model_grid
 
 
@@ -79,19 +79,19 @@ def do_generate_metrics_logistic_simple_model(X_train, y_train, X_test, y_test, 
     file_operations.write_logs(FILENAME, "do_generate_metrics_logistic_simple_model")
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
     file_operations.write_logs(FILENAME, "grid Best params")
-    file_operations.write_logs(FILENAME, grid.best_params_)
+    file_operations.write_logs(FILENAME, str(grid.best_params_))
 
     model.set_params(**grid.best_params_)
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
-    file_operations.write_logs(FILENAME, 'model params:' + model.get_params() + " model score:" + model.score)
-    file_operations.write_logs(FILENAME, 'model grid.best_params_:' + model.get_params() + " grid.best_score_:" + grid.best_score_)
+    file_operations.write_logs(FILENAME, 'model params:' + str(model.get_params()) + " model score:" + str(model.score))
+    file_operations.write_logs(FILENAME, 'model grid.best_params_:' + str(model.get_params()) + " grid.best_score_:" + str(grid.best_score_))
 
     return model, metrics
 
 
 def do_generate_rf_optimazed_model(X_train, y_train, parameters):
-    file_operations.write_logs(FILENAME,'Starting RF Grid Search with parameters:' + parameters)
+    file_operations.write_logs(FILENAME,'Starting RF Grid Search with parameters:' + str(parameters))
     model = RandomForestClassifier(random_state=my_constants.RANDOM_VALUE, oob_score=True)
     model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
     with ignore_warnings(category=ConvergenceWarning):
@@ -173,10 +173,10 @@ def predictions():
     # Linear base dummy model
     file_operations.write_logs(FILENAME,'Creating linear model')
     base_model = create_base_model(X_train, y_train, X_test, y_test)
-    file_operations.write_logs(FILENAME, "Metrics base_model: " + base_model['metrics'])
+    file_operations.write_logs(FILENAME, "Metrics base_model: " + str(base_model['metrics']))
     file_operations.get_submission_file(base_model['model'], '01_base_model.csv', competition_df)
 
-    file_operations.get_submission_file('Creating rf  model')
+    file_operations.write_logs(FILENAME,'Creating rf  model')
     rf_model_scaled = create_rf_optimized_model(X_train, y_train, X_test, y_test)
     file_operations.write_logs(FILENAME, "Metrics rf_model_scaled: " + rf_model_scaled['metrics'])
     file_operations.get_submission_file(rf_model_scaled['model'], '04_rf_model_optimized.csv', competition_df)
