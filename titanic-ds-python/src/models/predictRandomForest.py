@@ -2,12 +2,11 @@
 
 # kaggle.KaggleApi competitions download -c titanic
 
-
 import numpy as np
 import pandas as pd
 import os
 
-from lightgbm import LGBMClassifier
+#from lightgbm import LGBMClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import confusion_matrix
@@ -22,7 +21,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from lightgbm import LGBMClassifier
+#from lightgbm import LGBMClassifier
 from sklearn.svm import SVC, LinearSVC
 FILENAME='RF_Prediction_outcome.txt'
 
