@@ -17,7 +17,7 @@ from sklearn.linear_model import LogisticRegression
 
 def read_data(folder, filename, index_column='index'):
     # set the path of the raw data
-    data_path = os.path.join( os.path.pardir, 'data', folder)
+    data_path = os.path.join(os.path.pardir, os.path.pardir, 'data', folder)
     file_path = os.path.join(data_path, filename)
     # read the data with all default parameters
     df = pd.read_csv(file_path, index_col=index_column)
