@@ -67,8 +67,8 @@ def do_generate_metrics_lgbm_optimazed_model(X_train, y_train, X_test, y_test, g
 
 
 def do_generate_lgbm_optimazed_model(X_train, y_train, parameters):
-    file_operations.write_logs(FILENAME,'Starting LGBM Grid Search with parameters:')
-    file_operations.write_logs(FILENAME,parameters)
+    file_operations.write_logs(FILENAME, 'Starting LGBM Grid Search with parameters:')
+    file_operations.write_logs(FILENAME, str(parameters))
     model = LGBMClassifier(random_state=0)
     model = GridSearchCV(model, param_grid=parameters, cv=3)
     model.fit(X_train, y_train)
