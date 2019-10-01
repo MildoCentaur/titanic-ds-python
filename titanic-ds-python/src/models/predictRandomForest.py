@@ -66,7 +66,7 @@ def create_logistic_simple_model(X_train, y_train, X_test, y_test):
 def do_generate_logistic_simple_model(X_train, y_train, parameters):
     file_operations.write_logs(FILENAME, "Calculate logistic simple model")
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
-    model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
+    model_grid = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
 
@@ -93,7 +93,7 @@ def do_generate_metrics_logistic_simple_model(X_train, y_train, X_test, y_test, 
 def do_generate_rf_optimazed_model(X_train, y_train, parameters):
     file_operations.write_logs(FILENAME,'Starting RF Grid Search with parameters:' + str(parameters))
     model = RandomForestClassifier(random_state=my_constants.RANDOM_VALUE, oob_score=True)
-    model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
+    model_grid = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
 

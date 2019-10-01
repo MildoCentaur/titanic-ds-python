@@ -70,7 +70,7 @@ def do_generate_lgbm_optimazed_model(X_train, y_train, parameters):
     file_operations.write_logs(FILENAME, 'Starting LGBM Grid Search with parameters:')
     file_operations.write_logs(FILENAME, str(parameters))
     model = LGBMClassifier(random_state=0)
-    model = GridSearchCV(model, param_grid=parameters, cv=3)
+    model = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     model.fit(X_train, y_train)
     file_operations.write_logs(FILENAME,"LGBM grid search completed")
     return model

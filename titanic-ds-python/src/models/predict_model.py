@@ -66,7 +66,7 @@ def create_logistic_simple_model(X_train, y_train, X_test, y_test):
 
 def do_generate_logistic_simple_model(X_train, y_train, parameters):
     model = LogisticRegression(random_state=my_constants.RANDOM_VALUE)
-    model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
+    model_grid = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
     file_operations.write_logs(FILENAME, "Calculate logistic simple model" + model_grid)
@@ -88,7 +88,7 @@ def do_generate_metrics_logistic_simple_model(X_train, y_train, X_test, y_test, 
 
 def do_generate_rf_optimazed_model(X_train, y_train, parameters):
     model = RandomForestClassifier(random_state=my_constants.RANDOM_VALUE,oob_score=True)
-    model_grid = GridSearchCV(model, param_grid=parameters, cv=3)
+    model_grid = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     with ignore_warnings(category=ConvergenceWarning):
         model_grid.fit(X_train, y_train)
     print(model_grid)
@@ -121,7 +121,7 @@ def do_generate_metrics_lgbm_optimazed_model(X_train, y_train, X_test, y_test, g
 def do_generate_lgbm_optimazed_model(X_train, y_train, parameters):
 
     model = LGBMClassifier(random_state=0)
-    model = GridSearchCV(model, param_grid=parameters, cv=3)
+    model = GridSearchCV(model, param_grid=parameters, cv=3, verbose=3, n_jobs=3)
     model.fit(X_train, y_train)
     return model
 
@@ -186,7 +186,7 @@ def do_generate_svc_optimazed_model(X_train, y_train, parameters):
 
     estimador = SVC(random_state=my_constants.RANDOM_VALUE)
     print(estimador.get_params().keys())
-    model = GridSearchCV(estimator=estimador, param_grid=parameters, cv=3, iid=False)
+    model = GridSearchCV(estimator=estimador, param_grid=parameters, cv=3, iid=False, verbose=3, n_jobs=3)
     model.fit(X_train, y_train)
     return model
 
