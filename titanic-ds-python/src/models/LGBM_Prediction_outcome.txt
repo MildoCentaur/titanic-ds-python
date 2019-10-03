@@ -1,0 +1,11 @@
+Creating test and train dataset
+Creating linear model
+Metrics base_model: 
+{'score': 0.6145251396648045, 'precision': 0.0, 'cm': array([[110,   0],
+       [ 69,   0]])}
+Creating lgbm  model
+Starting LGBM Grid Search with parameters:
+{'learning_rate': [0.2, 0.3, 0.4, 0.5, 0.6], 'n_estimators': [5, 10, 20, 50, 70, 100, 150, 200], 'num_leaves': [10, 15, 20, 25, 30, 40, 50, 60], 'subsample_for_bin': [10, 50, 100, 200], 'reg_alpha': [0.1, 0.2, 0.5, 0.7, 0.8], 'reg_lambda': [0.1, 0.2, 0.5, 0.7, 0.8]}
+LGBM grid search completed
+LGBM metrics calculation
+
