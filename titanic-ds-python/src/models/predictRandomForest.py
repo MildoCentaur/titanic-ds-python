@@ -109,9 +109,9 @@ def do_generate_metrics_rf_optimazed_model(X_train, y_train, X_test, y_test, gri
     model.fit(X_train, y_train)
     metrics = calculate_metrics(model, X_test, y_test)
     file_operations.write_logs(FILENAME, "Generated model params and results\n params:" + str(model.get_params())
-                               + "\nscore " + model.score(X_test, y_test))
+                               + "\nscore " + str(model.score(X_test, y_test)))
     file_operations.write_logs(FILENAME, "Search grid best params and results\n params:" + str(grid.best_params_)
-                               + "\nscore " + grid.best_score_)
+                               + "\nscore " + str(grid.best_score_))
 
     return model, metrics
 
