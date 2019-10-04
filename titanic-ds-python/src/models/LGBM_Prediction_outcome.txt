@@ -9,3 +9,27 @@ Starting LGBM Grid Search with parameters:
 LGBM grid search completed
 LGBM metrics calculation
 
+Generated model params and results
+ params:{'boosting_type': 'gbdt', 'class_weight': None, 'colsample_bytree': 1.0, 'importance_type': 'split', 'learning_rate': 0.2, 'max_depth': -1, 'min_child_samples': 20, 'min_child_weight': 0.001, 'min_split_gain': 0.0, 'n_estimators': 20, 'n_jobs': -1, 'num_leaves': 15, 'objective': None, 'random_state': 0, 'reg_alpha': 0.1, 'reg_lambda': 0.5, 'silent': True, 'subsample': 1.0, 'subsample_for_bin': 200, 'subsample_freq': 0}
+score 0.8547486033519553
+Search grid best params and results
+ params:{'learning_rate': 0.2, 'n_estimators': 20, 'num_leaves': 15, 'reg_alpha': 0.1, 'reg_lambda': 0.5, 'subsample_for_bin': 200}
+score 0.8469101123595506
+Metrics lgbm_model: 
+{'score': 0.8547486033519553, 'precision': 0.864406779661017, 'cm': array([[102,   8],
+       [ 18,  51]])}
+Creating lgbm  scaled model
+Starting LGBM Grid Search with parameters:
+{'learning_rate': [0.2, 0.3, 0.4, 0.5, 0.6], 'n_estimators': [5, 10, 20, 50, 70, 100, 150, 200], 'num_leaves': [10, 15, 20, 25, 30, 40, 50, 60], 'subsample_for_bin': [10, 50, 100, 200], 'reg_alpha': [0.1, 0.2, 0.5, 0.7, 0.8], 'reg_lambda': [0.1, 0.2, 0.5, 0.7, 0.8]}
+LGBM grid search completed
+LGBM metrics calculation
+
+Generated model params and results
+ params:{'boosting_type': 'gbdt', 'class_weight': None, 'colsample_bytree': 1.0, 'importance_type': 'split', 'learning_rate': 0.3, 'max_depth': -1, 'min_child_samples': 20, 'min_child_weight': 0.001, 'min_split_gain': 0.0, 'n_estimators': 20, 'n_jobs': -1, 'num_leaves': 10, 'objective': None, 'random_state': 0, 'reg_alpha': 0.1, 'reg_lambda': 0.2, 'silent': True, 'subsample': 1.0, 'subsample_for_bin': 200, 'subsample_freq': 0}
+score 0.8603351955307262
+Search grid best params and results
+ params:{'learning_rate': 0.3, 'n_estimators': 20, 'num_leaves': 10, 'reg_alpha': 0.1, 'reg_lambda': 0.2, 'subsample_for_bin': 200}
+score 0.8469101123595506
+Metrics lgbm_model_scaled: 
+{'score': 0.8603351955307262, 'precision': 0.8666666666666667, 'cm': array([[102,   8],
+       [ 17,  52]])}
